@@ -1,5 +1,7 @@
 
 
+def convert_idd_to_coco_format():
+
 
 def format_image_annotations_as_coco(image_id, categories, areas, bboxes):
     """Format one set of image annotations to the COCO format
