@@ -148,7 +148,7 @@ if __name__ == "__main__":
     custom_dataset = load_dataset(DATASET_REPO,trust_remote_code=True)
     # custom_dataset = load_dataset("data/IDD_Detection_CPPE5",data_dir='data/IDD_Detection_CPPE5')
     if "validation" not in custom_dataset:
-        split = custom_dataset["train"].train_test_split(0.15, seed=24)
+        split = custom_dataset["train"].train_test_split(0.15, seed=24) #type:ignore
         custom_dataset["train"] = split["train"]
         custom_dataset["validation"] = split["test"]
 
@@ -172,7 +172,7 @@ if __name__ == "__main__":
 
 
     training_args = TrainingArguments(
-        "{HUB_MODEL_ID}-outputs",
+        f"{HUB_MODEL_ID}-outputs",
         num_train_epochs=30,
         fp16=False,
         per_device_train_batch_size=8,
