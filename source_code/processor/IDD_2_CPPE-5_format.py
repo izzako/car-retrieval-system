@@ -34,14 +34,13 @@ DATA_DIR = os.path.join('data/IDD_Detection')
 #create target dir
 OUT_DIR = os.path.join('data','IDD_Detection_CPPE5')
 
-
 for i in ['images','annotations']:
-    for j in ['train','test','val']:
+    for j in ['train','val']:
         os.makedirs(os.path.join(OUT_DIR,i,j),exist_ok=True)
 
 
-#copy img and label in IDD format from original dir to target dir
-for j in ['train','test','val']:
+#copy img and label in cityscape format from original dir to target dir
+for j in ['train','val']:
     print(f'Processing {j} set...')
     with open(os.path.join(DATA_DIR,j+'.txt'), 'r') as f:
         lines = f.readlines()
@@ -50,15 +49,14 @@ for j in ['train','test','val']:
         if not line: continue
         src_img_path = os.path.join(DATA_DIR, 'JPEGImages', line+'.jpg')
         dst_img_path = os.path.join(OUT_DIR, 'images', j, '-'.join(line.split('/'))+'.jpg')
-        # if os.path.exists(src_img_path):
-        #     shutil.copy2(src_img_path, dst_img_path)
+        if os.path.exists(src_img_path):
+            shutil.copy2(src_img_path, dst_img_path)
 
         src_label_path = os.path.join(DATA_DIR, 'Annotations', line+'.xml')
         dst_label_path = os.path.join(DATA_DIR, 'annotations_xml', j, '-'.join(line.split('/'))+'.xml')
 
         if os.path.exists(src_label_path):
             shutil.copy2(src_label_path, dst_label_path)
-
 
 #convert xml to json
 
@@ -175,3 +173,10 @@ for j in ['train','val']:
         with open(output_file, 'w') as f:
             json.dump(results, f, indent=4)
 
+
+# Upload to Hugging Face Hub
+from datasets import load_dataset
+
+ds = load_dataset("data/IDD_Detection_CPPE5",data_dir='data/IDD_Detection_CPPE5')
+
+ds.push_to_hub("IDD_Detection_CPPE5") #type:ignore

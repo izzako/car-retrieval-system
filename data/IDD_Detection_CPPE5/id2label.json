@@ -1,0 +1,11 @@
+{
+    "0": "traffic sign",
+    "1": "motorcycle",
+    "2": "car",
+    "3": "rider",
+    "4": "person",
+    "5": "truck",
+    "6": "autorickshaw",
+    "7": "vehicle fallback",
+    "8": "bus"
+}
