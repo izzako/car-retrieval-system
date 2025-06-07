@@ -14,6 +14,8 @@ _HOMEPAGE = "https://huggingface.co/datasets/your-username/your-dataset-name"
 
 _LICENSE = "MIT"
 
+_CATEGORIES = ['traffic sign', 'motorcycle', 'car', 'rider', 'person', 'truck', 'autorickshaw', 'vehicle fallback', 'bus']
+
 class IDDDetection(datasets.GeneratorBasedBuilder):
     """Custom dataset for IDD Detection in COCO-like format."""
     VERSION = datasets.Version("1.0.0")
@@ -33,7 +35,7 @@ class IDDDetection(datasets.GeneratorBasedBuilder):
                 "width": datasets.Value("int32"),
                 "objects": datasets.Sequence({
                     "id": datasets.Value("int64"),
-                    "category": datasets.Value("int32"),
+                    "category":  datasets.ClassLabel(names=_CATEGORIES),
                     "bbox": datasets.Sequence(datasets.Value("float32"),length=4),
                     "area": datasets.Value("float32"),
                 }),
@@ -67,7 +69,9 @@ class IDDDetection(datasets.GeneratorBasedBuilder):
         
         with open(annotations_path, "r") as f:
             data = json.load(f)
-
+        
+        image_id_to_image = {}
+    
         for idx, ann in enumerate(data):
             # image_id = ann["image_id"]
             filename = ann["filename"]
@@ -79,7 +83,7 @@ class IDDDetection(datasets.GeneratorBasedBuilder):
             for i in range(len(ann["objects"]["id"])):
                 obj = {
                     "id": ann["objects"]["id"][i],
-                    "category": ann["objects"]["category"][i],
+                    "category": _CATEGORIES[ann["objects"]["category"][i]],
                     "bbox": [float(x) for x in ann["objects"]["bbox"][i]],
                     "area": float(ann["objects"]["area"][i]),
                 }
