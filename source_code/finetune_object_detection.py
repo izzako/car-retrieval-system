@@ -15,6 +15,7 @@ from dataclasses import dataclass
 from torchmetrics.detection.mean_ap import MeanAveragePrecision
 from functools import partial
 import json
+import wandb
 
 # Login to Hugging Face Hub
 login(token=os.environ['HF_TOKEN'])  # Replace with your Hugging Face token
@@ -144,8 +145,8 @@ def compute_metrics(evaluation_results, image_processor, threshold=0.0, id2label
 if __name__ == "__main__":
     wandb.login()
     print(f'Loading dataset from {DATASET_REPO}...')
-    # custom_dataset = load_dataset("izzako/IDD_Detection_CPPE5",trust_remote_code=True)
-    custom_dataset = load_dataset("data/IDD_Detection_CPPE5",data_dir='data/IDD_Detection_CPPE5')
+    custom_dataset = load_dataset(DATASET_REPO,trust_remote_code=True)
+    # custom_dataset = load_dataset("data/IDD_Detection_CPPE5",data_dir='data/IDD_Detection_CPPE5')
     if "validation" not in custom_dataset:
         split = custom_dataset["train"].train_test_split(0.15, seed=24)
         custom_dataset["train"] = split["train"]
@@ -189,12 +190,14 @@ if __name__ == "__main__":
         remove_unused_columns=False,
         eval_do_concat_batches=False,
         push_to_hub=True,
-        eval_strategy="epoch",
         report_to="wandb",
         hub_model_id=HUB_MODEL_ID,
+        save_steps=100,
+        eval_accumulation_steps=5,
+        eval_steps=100,
+        logging_steps=100,
         hub_strategy="end",
-        resume_from_checkpoint=True
-        save_strategy="epoch",
+        resume_from_checkpoint=True,
         logging_dir="./logs",
     )
 
@@ -214,5 +217,6 @@ if __name__ == "__main__":
         "repo_id": "izzako/detr_finetuned_idd_cppe5",
         "repo_type": "model",
         "private": True,
-        "use_auth_token": os.environ['HF_TOKEN'],
+        "use_auth_token": os.environ['HF_TOKEN']
+    }
     trainer.push_to_hub(**kwargs)
