@@ -178,5 +178,8 @@ for j in ['train','val']:
 from datasets import load_dataset
 
 ds = load_dataset("data/IDD_Detection_CPPE5",data_dir='data/IDD_Detection_CPPE5')
+ds['validation'] = ds['validation'].filter(lambda example: len(example["objects"]['category'])!=0)
+ds['train'] =  ds['train'].filter(lambda example: len(example["objects"]['category'])!=0)
+
 
 ds.push_to_hub("IDD_Detection_CPPE5") #type:ignore
