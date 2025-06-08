@@ -75,7 +75,7 @@ def images_to_video(image_folder, output_path, video_length_seconds=197, fps=Non
     print(f"Creating video of {video_length_seconds:.2f} seconds at {fps:.2f} FPS.")
 
     # Define video writer
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # You can change to 'XVID' for .avi
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # type: ignore # You can change to 'XVID' for .avi
     out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
 
     for image_file in image_files:
