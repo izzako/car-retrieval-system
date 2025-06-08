@@ -144,3 +144,4 @@ yacs==0.1.8
 yarl==1.18.3
 wandb
 torchmetrics[detection]
+python-dotenv
