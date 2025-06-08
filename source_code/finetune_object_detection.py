@@ -1,3 +1,7 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from huggingface_hub import login
 from datasets import load_dataset
@@ -10,7 +14,6 @@ import numpy as np
 import torch
 from processor import helpers
 from transformers import AutoModelForObjectDetection
-import os
 from dataclasses import dataclass
 from torchmetrics.detection.mean_ap import MeanAveragePrecision
 from functools import partial
@@ -24,6 +27,7 @@ DATASET_REPO = "izzako/IDD_Detection_CPPE5"
 MODEL_NAME = "microsoft/conditional-detr-resnet-50"  # or "facebook/detr-resnet-50"
 HUB_MODEL_ID = "detr-resnet-50-finetuned-IDD_Detection"
 IMAGE_SIZE = 480
+DEBUG = False
 
 MAX_SIZE = IMAGE_SIZE
 
@@ -54,7 +58,7 @@ train_augment_and_transform = A.Compose(
         A.RandomBrightnessContrast(p=0.5),
         A.HueSaturationValue(p=0.1),
     ],
-    bbox_params=A.BboxParams(format="coco", label_fields=["category"], clip=True, min_area=25),
+    bbox_params=A.BboxParams(format="coco", label_fields=["category"], clip=True, min_area=50),
 )
 
 validation_transform = A.Compose(
@@ -69,7 +73,6 @@ train_transform_batch = partial(
 validation_transform_batch = partial(
     helpers.augment_and_transform_batch, transform=validation_transform, image_processor=image_processor
 )
-
 
 @dataclass
 class ModelOutput:
@@ -111,6 +114,9 @@ def compute_metrics(evaluation_results, image_processor, threshold=0.0, id2label
         # here we will convert them to Pascal VOC format (x_min, y_min, x_max, y_max)
         for image_target in batch:
             boxes = torch.tensor(image_target["boxes"])
+            # print(image_target["orig_size"])
+            if len(image_target["orig_size"])==1:
+                image_target["orig_size"].append(image_target["orig_size"][0]*16/9)
             boxes = helpers.convert_bbox_yolo_to_pascal(boxes, image_target["orig_size"])
             labels = torch.tensor(image_target["class_labels"])
             post_processed_targets.append({"boxes": boxes, "labels": labels})
@@ -142,26 +148,30 @@ def compute_metrics(evaluation_results, image_processor, threshold=0.0, id2label
     metrics = {k: round(v.item(), 4) for k, v in metrics.items()}
     return metrics
 
+eval_compute_metrics_fn = partial(
+    compute_metrics, image_processor=image_processor, id2label=id2label, threshold=0.0
+)
+
 if __name__ == "__main__":
     wandb.login()
     print(f'Loading dataset from {DATASET_REPO}...')
     custom_dataset = load_dataset(DATASET_REPO,trust_remote_code=True)
-    # custom_dataset = load_dataset("data/IDD_Detection_CPPE5",data_dir='data/IDD_Detection_CPPE5')
-    if "validation" not in custom_dataset:
-        split = custom_dataset["train"].train_test_split(0.15, seed=24) #type:ignore
-        custom_dataset["train"] = split["train"]
-        custom_dataset["validation"] = split["test"]
 
+    if DEBUG: #sample 5%
+        custom_dataset["train"] = custom_dataset["train"].train_test_split(test_size=0.05, seed=42)["test"]
+        custom_dataset["validation"] = custom_dataset["validation"].train_test_split(test_size=0.05, seed=42)["test"]
+    # custom_dataset = load_dataset("data/IDD_Detection_CPPE5",data_dir='data/IDD_Detection_CPPE5') #local
 
-    eval_compute_metrics_fn = partial(
-        compute_metrics, image_processor=image_processor, id2label=id2label, threshold=0.0
-    )
+    # if "validation" not in custom_dataset:
+    #     split = custom_dataset["train"].train_test_split(0.15, seed=24) #type:ignore
+    #     custom_dataset["train"] = split["train"]
+    #     custom_dataset["validation"] = split["test"]
+
 
     # Preproess the datasets with the defined transformations
     custom_dataset["train"] = custom_dataset["train"].with_transform(train_transform_batch)
     custom_dataset["validation"] = custom_dataset["validation"].with_transform(validation_transform_batch)
-
-
+    
     #train the model
     model = AutoModelForObjectDetection.from_pretrained(
         MODEL_NAME,
@@ -170,13 +180,13 @@ if __name__ == "__main__":
         ignore_mismatched_sizes=True,
     )
 
-
     training_args = TrainingArguments(
         f"{HUB_MODEL_ID}-outputs",
-        num_train_epochs=30,
-        fp16=False,
-        per_device_train_batch_size=8,
-        dataloader_num_workers=4,
+        num_train_epochs=10,
+        fp16=True,
+        per_device_train_batch_size=6,
+        per_device_eval_batch_size=6,
+        dataloader_num_workers=2,
         learning_rate=5e-5,
         lr_scheduler_type="cosine",
         weight_decay=1e-4,
@@ -192,10 +202,8 @@ if __name__ == "__main__":
         push_to_hub=True,
         report_to="wandb",
         hub_model_id=HUB_MODEL_ID,
-        save_steps=100,
-        eval_accumulation_steps=5,
-        eval_steps=100,
-        logging_steps=100,
+        # eval_steps=100,
+        # logging_steps=100,
         hub_strategy="end",
         resume_from_checkpoint=True,
         logging_dir="./logs",
@@ -214,9 +222,8 @@ if __name__ == "__main__":
     trainer.train()
     # Save the model to the hub
     kwargs = {
-        "repo_id": "izzako/detr_finetuned_idd_cppe5",
-        "repo_type": "model",
-        "private": True,
-        "use_auth_token": os.environ['HF_TOKEN']
+        "tags": ["vision", "object-detection"],
+        "finetuned_from": MODEL_NAME,
+        "dataset": "IDD 40K Object Detection Dataset",
     }
     trainer.push_to_hub(**kwargs)
