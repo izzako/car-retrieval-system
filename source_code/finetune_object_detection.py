@@ -116,7 +116,8 @@ def compute_metrics(evaluation_results, image_processor, threshold=0.0, id2label
             boxes = torch.tensor(image_target["boxes"])
             # print(image_target["orig_size"])
             if len(image_target["orig_size"])==1:
-                image_target["orig_size"].append(image_target["orig_size"][0]*16/9)
+                image_target["orig_size"] = np.append(image_target["orig_size"], image_target["orig_size"][0]*16/9)
+                
             boxes = helpers.convert_bbox_yolo_to_pascal(boxes, image_target["orig_size"])
             labels = torch.tensor(image_target["class_labels"])
             post_processed_targets.append({"boxes": boxes, "labels": labels})
@@ -157,6 +158,9 @@ if __name__ == "__main__":
     print(f'Loading dataset from {DATASET_REPO}...')
     custom_dataset = load_dataset(DATASET_REPO,trust_remote_code=True)
 
+    # use 95% of the eval dataset -> for speeding up
+    custom_dataset["validation"] = custom_dataset["validation"].train_test_split(test_size=0.95, seed=42)["test"]
+
     if DEBUG: #sample 5%
         custom_dataset["train"] = custom_dataset["train"].train_test_split(test_size=0.05, seed=42)["test"]
         custom_dataset["validation"] = custom_dataset["validation"].train_test_split(test_size=0.05, seed=42)["test"]
@@ -184,8 +188,8 @@ if __name__ == "__main__":
         f"{HUB_MODEL_ID}-outputs",
         num_train_epochs=10,
         fp16=True,
-        per_device_train_batch_size=6,
-        per_device_eval_batch_size=6,
+        per_device_train_batch_size=4,
+        per_device_eval_batch_size=4,
         dataloader_num_workers=2,
         learning_rate=5e-5,
         lr_scheduler_type="cosine",
