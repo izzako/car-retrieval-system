@@ -20,10 +20,40 @@ This system consists of two models:
 ---
 # Car Detection Model
 
-This object detection model was trained on the Indian Driving Dataset [(Varma et al, 2018)](https://arxiv.org/pdf/1811.10200v1) that was initially used for image segmentation task. We will use this dataset since it is resemble Indonesian road condition.
+This object detection model was based on [DETR-ResNet50](microsoft/conditional-detr-resnet-50) with 40M+ parameters, and was trained on the Indian Driving Dataset [(Varma et al, 2018)](https://arxiv.org/pdf/1811.10200v1) 40K used for object detection task. We will use this dataset since it is resemble the Indonesian road condition.
+
+The dataset has 9 labels and defined as such:
+```json
+{
+    "0": "traffic sign",
+    "1": "motorcycle",
+    "2": "car",
+    "3": "rider",
+    "4": "person",
+    "5": "truck",
+    "6": "autorickshaw",
+    "7": "vehicle fallback",
+    "8": "bus"
+}
+```
+And we manually convert this dataset into to a CPPE-5-like (YOLO annotation) format and uploaded it into huggingface.\
+🤗 [**Huggingface Dataset Link**](https://huggingface.co/datasets/izzako/IDD_Detection_CPPE5)
 
 ---
 # Car Classifier Model
 
-The classifier model was trained on the CompCars dataset introduced by [Yang et al. (2015)](https://arxiv.org/pdf/1506.08959v2). This dataset contains up to 12 types of car, which are MPV, SUV, hatchback, sedan, minibus, fastback, estate, pickup, sports, crossover, convertible, and hardtop convertible, as shown as in the image below.
-![dataset car type](misc_images/image1.png)
+The classifier model was trained on the Standford Cars dataset introduced by [Krause et al. (2015)](https://openaccess.thecvf.com/content_cvpr_2015/html/Krause_Fine-Grained_Recognition_Without_2015_CVPR_paper.html). This dataset does not contains car type, however, [mayurmahukar](https://github.com/mayurmahurkar/Stanford-Cars-Body-Data?utm_source=chatgpt.com) create a mapping to 10 types of car, which are:
+```python
+{
+    0: 'Coupe',
+    1: 'Sedan',
+    2: 'Cab',
+    3: 'Convertible',
+    4: 'SUV',
+    5: 'Minivan',
+    6: 'Hatchback',
+    7: 'Other',
+    8: 'Van',
+    9: 'Wagon'
+ }
+```
