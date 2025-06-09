@@ -195,18 +195,20 @@ cython_debug/
 .cursorindexingignore
 
 # custom
+*.arrow
 data/CompCars
 data/IDD_Detection
-idd-detection.tar
+*.tar
 wandb/
-data/IDD_Detection_CPPE5/images/test/*
-data/IDD_Detection_CPPE5/images/train/*
-data/IDD_Detection_CPPE5/images/val/*
+data/**/*.jpg
 hf_home/
 frame_dir/
 .DS_Store
+*_sandbox.ipynb
+
 #ignore computing logging
 *.o*
 #ignore model outputs folder
 *-outputs/ 
 check data.ipynb
+output/

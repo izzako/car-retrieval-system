@@ -36,8 +36,9 @@ echo "Job ID : $JOB_ID"
 echo "=========================================================="
 
 
-
+# load to the shared computing unit
 module load cuda/12.2 gcc/12.2.0 python3/3.10.12 torch
+
 # python -V
 
 "/projectnb/llamagrp/izzan/env/bin/python" source_code/finetune_object_detection.py

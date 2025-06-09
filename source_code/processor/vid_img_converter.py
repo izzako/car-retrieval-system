@@ -5,11 +5,11 @@ from glob import glob
 from dotenv import load_dotenv
 load_dotenv()
 
-test_video = "test_video.mp4"
-FRAME_DIR = "frame_dir"
-PRED_FRAME_DIR = "pred_frame_dir"
-OUTPUT_NAME = "output.mp4"
+test_video = "data/test_video.mp4"
+FRAME_DIR = "data/frame_dir"
+PRED_FRAME_DIR = "data/pred_frame_dir"
 OUTPUT_VID_NAME = "output_video.mp4"
+IS_DOWNLOAD=True
 
 def video_to_images(video_path, output_folder, prefix="frame", image_format="jpg"):
     """
@@ -89,13 +89,13 @@ def images_to_video(image_folder, output_path, video_length_seconds=197, fps=Non
 
 
 if __name__ == "__main__":
-    #downlaod the video file using gdown
     
-    vid_id = os.environ.get("VIDEO_URL")
-    gdown.download(id=vid_id, output=test_video, quiet=False)
-
-
-    # convert the video to images
-    video_to_images(test_video, FRAME_DIR)
-
-    images_to_video(PRED_FRAME_DIR, OUTPUT_VID_NAME)
+    
+    if IS_DOWNLOAD: #downlaod the video file using gdown
+        vid_id = os.environ.get("VIDEO_GDRIVE_ID")
+        gdown.download(id=vid_id, output=test_video, quiet=False)
+        # convert the video to images
+        video_to_images(test_video, FRAME_DIR)
+    else:
+        #convert predicted images to video
+        images_to_video(PRED_FRAME_DIR, OUTPUT_VID_NAME)
