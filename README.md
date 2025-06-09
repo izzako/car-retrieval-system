@@ -31,8 +31,14 @@ To set this system up, you need to:
 3. (Optional) create a virtual environment `.env` with `python3 -m venv .env`
 4. Activate it with `source .env/bin/activate`
 5. Install the required dependencies `pip install -r requirements.txt`
+6. You also need to setup a `.env` for these variables:
+ - `HF_TOKEN`: your huggingface credential
+ - `WANDB_PROJECT`: project name for tracking in Weight & Biases website
+ - `HF_HOME`: huggingface default download path (models, datasets, etc)
+ - `TORCH_HOME`: torch default download path
+ - `VIDEO_GDRIVE_ID`: the google drive id of test video
 
-## Information
+## 
 
 ---
 # Car Detection Model
