@@ -8,7 +8,7 @@ load_dotenv()
 
 test_video = "data/test_video.mp4"
 FRAME_DIR = "data/frame_dir"
-PRED_FRAME_DIR = "output/od_frame"
+PRED_FRAME_DIR = "output/pred_image"
 OUTPUT_VID_NAME = "output/output_video.mp4"
 IS_DOWNLOAD=False
 

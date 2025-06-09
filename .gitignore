@@ -211,4 +211,6 @@ frame_dir/
 #ignore model outputs folder
 *-outputs/ 
 check data.ipynb
-output/
+test_video.mp4
+frame*.json
+frame*.jpg

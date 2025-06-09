@@ -185,11 +185,11 @@ if __name__ == "__main__":
     )
 
     training_args = TrainingArguments(
-        f"{HUB_MODEL_ID}-outputs",
+        f"{HUB_MODEL_ID}-30-outputs",
         num_train_epochs=30,
-        fp16=True,
-        per_device_train_batch_size=4,
-        per_device_eval_batch_size=4,
+        fp16=False,
+        per_device_train_batch_size=6,
+        per_device_eval_batch_size=6,
         dataloader_num_workers=2,
         learning_rate=5e-5,
         lr_scheduler_type="cosine",
