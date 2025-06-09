@@ -58,7 +58,7 @@ train_augment_and_transform = A.Compose(
         A.RandomBrightnessContrast(p=0.5),
         A.HueSaturationValue(p=0.1),
     ],
-    bbox_params=A.BboxParams(format="coco", label_fields=["category"], clip=True, min_area=50),
+    bbox_params=A.BboxParams(format="coco", label_fields=["category"], clip=True, min_area=25),
 )
 
 validation_transform = A.Compose(
@@ -116,7 +116,7 @@ def compute_metrics(evaluation_results, image_processor, threshold=0.0, id2label
             boxes = torch.tensor(image_target["boxes"])
             # print(image_target["orig_size"])
             if len(image_target["orig_size"])==1:
-                image_target["orig_size"] = np.append(image_target["orig_size"], image_target["orig_size"][0]*16/9)
+                continue #ignore
                 
             boxes = helpers.convert_bbox_yolo_to_pascal(boxes, image_target["orig_size"])
             labels = torch.tensor(image_target["class_labels"])

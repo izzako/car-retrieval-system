@@ -3,13 +3,14 @@ import os
 import cv2
 from glob import glob
 from dotenv import load_dotenv
+from tqdm import tqdm
 load_dotenv()
 
 test_video = "data/test_video.mp4"
 FRAME_DIR = "data/frame_dir"
-PRED_FRAME_DIR = "data/pred_frame_dir"
-OUTPUT_VID_NAME = "output_video.mp4"
-IS_DOWNLOAD=True
+PRED_FRAME_DIR = "output/od_frame"
+OUTPUT_VID_NAME = "output/output_video.mp4"
+IS_DOWNLOAD=False
 
 def video_to_images(video_path, output_folder, prefix="frame", image_format="jpg"):
     """
@@ -78,7 +79,7 @@ def images_to_video(image_folder, output_path, video_length_seconds=197, fps=Non
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # type: ignore # You can change to 'XVID' for .avi
     out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
 
-    for image_file in image_files:
+    for image_file in tqdm(image_files):
         frame = cv2.imread(image_file)
         if frame.shape[0:2] != (height, width):
             frame = cv2.resize(frame, (width, height))
