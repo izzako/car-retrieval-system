@@ -195,6 +195,7 @@ cython_debug/
 .cursorindexingignore
 
 # custom
+*.arrow
 data/CompCars
 data/IDD_Detection
 idd-detection.tar
@@ -209,3 +210,4 @@ frame_dir/
 *.o*
 #ignore model outputs folder
 *-outputs/ 
+output/

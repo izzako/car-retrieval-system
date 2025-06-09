@@ -1,3 +1,7 @@
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import pandas as pd
 import os
 import cv2
@@ -6,11 +10,22 @@ import scipy.io
 from tqdm import tqdm
 import json
 from glob import glob
-
+from huggingface_hub import login
 import xml.etree.ElementTree as ET
 from datasets import Dataset, DatasetDict, Image
 import shutil
+from datasets import load_dataset
 
+# Login to Hugging Face Hub
+login(token=os.environ['HF_TOKEN'])  
+
+#BASE DIR
+DATA_DIR = os.path.join('data/IDD_Detection')
+
+#create target dir
+OUT_DIR = os.path.join('data','IDD_Detection_CPPE5')
+
+#DEFINE MAPPING
 id2label_idd = {
     0: 'traffic sign',
     1: 'motorcycle',
@@ -25,19 +40,14 @@ id2label_idd = {
 }
 label2id_idd = {v: k for k, v in id2label_idd.items()}
 
-json.dump(id2label_idd, open(os.path.join('data','IDD_Detection_CPPE5', 'id2label.json'), 'w'), indent=4)
+json.dump(id2label_idd, open(os.path.join(OUT_DIR, 'id2label.json'), 'w'), indent=4)
 
 #RESTRUCTURE DIRECTORY
 
-DATA_DIR = os.path.join('data/IDD_Detection')
-
-#create target dir
-OUT_DIR = os.path.join('data','IDD_Detection_CPPE5')
 
 for i in ['images','annotations']:
     for j in ['train','val']:
         os.makedirs(os.path.join(OUT_DIR,i,j),exist_ok=True)
-
 
 #copy img and label in cityscape format from original dir to target dir
 for j in ['train','val']:
@@ -61,7 +71,7 @@ for j in ['train','val']:
 #convert xml to json
 
 # Define paths
-idd_ann_dir = os.path.join('.', 'data','IDD_Detection', 'annotations_xml')
+idd_ann_dir = os.path.join(DATA_DIR, 'annotations_xml')
 
 # Helper: get all annotation files
 xml_files = glob(os.path.join(idd_ann_dir,'val', '*.xml'))
@@ -156,10 +166,6 @@ def convert_to_cppe5_format(xml_file):
     image_id += 1
     return label
 
-for i in ['annotations']:
-    for j in ['train','test','val']:
-        os.makedirs(os.path.join(OUT_DIR,i,j),exist_ok=True)
-
 
 for j in ['train','val']:
     xml_files = glob(os.path.join(idd_ann_dir,j, '*.xml'))
@@ -175,9 +181,11 @@ for j in ['train','val']:
 
 
 # Upload to Hugging Face Hub
-from datasets import load_dataset
 
-ds = load_dataset("data/IDD_Detection_CPPE5",data_dir='data/IDD_Detection_CPPE5')
+
+ds = load_dataset(OUT_DIR,data_dir=OUT_DIR)
+
+#filter out the no-bounding-box-data
 ds['validation'] = ds['validation'].filter(lambda example: len(example["objects"]['category'])!=0)
 ds['train'] =  ds['train'].filter(lambda example: len(example["objects"]['category'])!=0)
 

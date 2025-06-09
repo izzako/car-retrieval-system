@@ -1,0 +1,78 @@
+{
+  "builder_name": "parquet",
+  "citation": "",
+  "config_name": "default",
+  "dataset_name": "stanford-cars",
+  "dataset_size": 1989977474,
+  "description": "",
+  "download_checksums": {
+    "hf://datasets/Donghyun99/Stanford-Cars@c9c43a068ed98f2bb655814a01eacbe2afc2e3f1/data/train-00000-of-00002.parquet": {
+      "num_bytes": 499642695,
+      "checksum": null
+    },
+    "hf://datasets/Donghyun99/Stanford-Cars@c9c43a068ed98f2bb655814a01eacbe2afc2e3f1/data/train-00001-of-00002.parquet": {
+      "num_bytes": 489060195,
+      "checksum": null
+    },
+    "hf://datasets/Donghyun99/Stanford-Cars@c9c43a068ed98f2bb655814a01eacbe2afc2e3f1/data/test-00000-of-00002.parquet": {
+      "num_bytes": 471852255,
+      "checksum": null
+    },
+    "hf://datasets/Donghyun99/Stanford-Cars@c9c43a068ed98f2bb655814a01eacbe2afc2e3f1/data/test-00001-of-00002.parquet": {
+      "num_bytes": 515211527,
+      "checksum": null
+    }
+  },
+  "download_size": 1975766672,
+  "features": {
+    "image": {
+      "_type": "Image"
+    },
+    "label": {
+      "names": [
+        "Coupe",
+        "Sedan",
+        "Cab",
+        "Convertible",
+        "SUV",
+        "Minivan",
+        "Hatchback",
+        "Other",
+        "Van",
+        "Wagon"
+      ],
+      "_type": "ClassLabel"
+    }
+  },
+  "homepage": "",
+  "license": "",
+  "size_in_bytes": 3965744146,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 995574366,
+      "num_examples": 8143,
+      "shard_lengths": [
+        4072,
+        4071
+      ],
+      "dataset_name": "stanford-cars"
+    },
+    "test": {
+      "name": "test",
+      "num_bytes": 994403108,
+      "num_examples": 8040,
+      "shard_lengths": [
+        4220,
+        3820
+      ],
+      "dataset_name": "stanford-cars"
+    }
+  },
+  "version": {
+    "version_str": "0.0.0",
+    "major": 0,
+    "minor": 0,
+    "patch": 0
+  }
+}

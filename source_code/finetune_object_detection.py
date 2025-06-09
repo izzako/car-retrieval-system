@@ -186,7 +186,7 @@ if __name__ == "__main__":
 
     training_args = TrainingArguments(
         f"{HUB_MODEL_ID}-outputs",
-        num_train_epochs=10,
+        num_train_epochs=30,
         fp16=True,
         per_device_train_batch_size=4,
         per_device_eval_batch_size=4,
