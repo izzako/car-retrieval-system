@@ -10,12 +10,29 @@ This system consists of two models:
 - Car Body Type Classifier model, using [Y]
 
 ---
+
+
 # Getting started
+
+This guide is for UNIX-based OS. 
 
 ## Requrements
 
-- Python 3.12.7
-- MacOS Sequoaia 15.1
+- Python>=3.10.2
+- All dependencies are in the `requirements.txt`
+- Ideally a linux-based system, equipped with CUDA (check it with `nvcc --version`)
+
+## Setting up
+
+To set this system up, you need to:
+
+1. Clone the repo with `git clone`
+2. go to the inside of the directory with `cd car-retrieval system`
+3. (Optional) create a virtual environment `.env` with `python3 -m venv .env`
+4. Activate it with `source .env/bin/activate`
+5. Install the required dependencies `pip install -r requirements.txt`
+
+## Information
 
 ---
 # Car Detection Model

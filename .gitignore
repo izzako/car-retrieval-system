@@ -209,3 +209,4 @@ frame_dir/
 *.o*
 #ignore model outputs folder
 *-outputs/ 
+check data.ipynb
