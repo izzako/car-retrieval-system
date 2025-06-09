@@ -99,4 +99,39 @@ if __name__=="__main__":
         torch.cuda.empty_cache()
     
     # save result
-    save_model_state(mobilenet_v3_large, epoch, train_loss, path=f"./output/mobilenet_v3_large_checkpoint_{epoch+1}.pth")
+    save_model_state(mobilenet_v3_large, epoch+1, train_loss, path=f"./output/mobilenet_v3_large_checkpoint_{epoch+1}.pth")
+
+    ######### EVALUATION ###########
+    # load base model
+    model = models.mobilenet_v3_large()
+    model.classifier[3] = nn.Linear(in_features=1280, out_features=len(ds['train'].features['label'].names))
+
+    # load trained weigths 
+    checkpoint = torch.load(f"./output/mobilenet_v3_large_checkpoint_{epoch+1}.pth")
+    model.load_state_dict(checkpoint['model_state_dict'])
+    epoch = checkpoint['epoch']
+    train_loss = checkpoint['train_loss']
+
+    # add y_test as ground truth
+    y_test = [labels for _,labels in tqdm(eval_loader)]
+    y_test = torch.cat(y_test).tolist()
+
+    model.eval().to(device)  # Set the model to evaluation mode
+
+    correct = 0
+    total = 0
+    y_pred = []
+    with torch.no_grad():
+        for inputs, labels in tqdm(eval_loader):
+            inputs = inputs.to(device)
+            labels = labels.to(device)
+            outputs = model(inputs)
+            _, predicted = torch.max(outputs.data, 1)
+            y_pred += predicted.tolist()
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
+    accuracy = 100 * correct / total
+    macro_f1 = 100 * f1_score(y_test,y_pred,average='macro')
+    print('==== Evaluation Results ======')
+    print(f'Validation Accuracy: {accuracy:.2f}%')
+    print(f"Macro F1: {macro_f1:.2f}%")
