@@ -10,7 +10,7 @@ This system consists of two models:
 - Car Body Type Classifier model, using [MobilenetV3](https://docs.pytorch.org/vision/main/models/mobilenetv3.html)
 
 The predicted result video can be seen on:
-[▶ this link](https://drive.google.com/file/d/1TFIIqPzMxXhMJJ6UTS0NMNwZlQI-nJK2/view?usp=sharing)
+[▶ this link](https://drive.google.com/file/d/1xqp0DVImlBEv6S1S_StJM3ilmp_duxwj/view?usp=sharing)
 
 You can also access the technical reports documentation [**here**](https://docs.google.com/document/d/1DH2EZPOcDfcGWRjLHZyOHD4DvVx-7_4VJbSbI6pMVbc/edit?usp=sharing) to see the system architecture, training documentation, etc.
 
