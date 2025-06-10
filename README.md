@@ -70,7 +70,7 @@ And we manually convert this dataset into to a CPPE-5-like (YOLO annotation) for
 ---
 # Car Classifier Model
 
-The classifier model was based on [MobileNetV3](https://arxiv.org/pdf/1905.02244) available on [torch architecture](https://docs.pytorch.org/vision/main/models/mobilenetv3.html), and then trained on the Standford Cars dataset introduced by [Krause et al. (2015)](https://openaccess.thecvf.com/content_cvpr_2015/html/Krause_Fine-Grained_Recognition_Without_2015_CVPR_paper.html). This dataset does not contains car type, however, [mayurmahukar](https://github.com/mayurmahurkar/Stanford-Cars-Body-Data?utm_source=chatgpt.com) create a mapping to 10 types of car, which are:
+The classifier model was based on [MobileNetV3](https://arxiv.org/pdf/1905.02244) available on [torch architecture](https://docs.pytorch.org/vision/main/models/mobilenetv3.html), and then trained on the Stanford Cars dataset introduced by [Krause et al. (2015)](https://openaccess.thecvf.com/content_cvpr_2015/html/Krause_Fine-Grained_Recognition_Without_2015_CVPR_paper.html). This dataset does not contains car type, however, [mayurmahukar](https://github.com/mayurmahurkar/Stanford-Cars-Body-Data?utm_source=chatgpt.com) create a mapping to 10 types of car, which are:
 ```python
 {
     0: 'Coupe',
