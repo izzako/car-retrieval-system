@@ -6,8 +6,14 @@ This project is intended for completing technical test. This Car Retrieval Syste
 instances then classify/retrieve what is the type (eg. MPV, Sedan, Hatchback, etc) of the detected car.
 
 This system consists of two models:
-- Car Detection model, using [X]
-- Car Body Type Classifier model, using [Y]
+- Car Detection model, using [DETR-ResNet50](microsoft/conditional-detr-resnet-50)
+- Car Body Type Classifier model, using [MobilenetV3](https://docs.pytorch.org/vision/main/models/mobilenetv3.html)
+
+The predicted result video can be seen on:
+[▶ this link](https://drive.google.com/file/d/1TFIIqPzMxXhMJJ6UTS0NMNwZlQI-nJK2/view?usp=sharing)
+
+You can also access the technical reports documentation [**here**](https://docs.google.com/document/d/1DH2EZPOcDfcGWRjLHZyOHD4DvVx-7_4VJbSbI6pMVbc/edit?usp=sharing) to see the system architecture, training documentation, etc.
+
 
 ---
 
@@ -38,7 +44,6 @@ To set this system up, you need to:
  - `TORCH_HOME`: torch default download path
  - `VIDEO_GDRIVE_ID`: the google drive id of test video
 
-## 
 
 ---
 # Car Detection Model
@@ -65,7 +70,7 @@ And we manually convert this dataset into to a CPPE-5-like (YOLO annotation) for
 ---
 # Car Classifier Model
 
-The classifier model was trained on the Standford Cars dataset introduced by [Krause et al. (2015)](https://openaccess.thecvf.com/content_cvpr_2015/html/Krause_Fine-Grained_Recognition_Without_2015_CVPR_paper.html). This dataset does not contains car type, however, [mayurmahukar](https://github.com/mayurmahurkar/Stanford-Cars-Body-Data?utm_source=chatgpt.com) create a mapping to 10 types of car, which are:
+The classifier model was based on [MobileNetV3](https://arxiv.org/pdf/1905.02244) available on [torch architecture](https://docs.pytorch.org/vision/main/models/mobilenetv3.html), and then trained on the Standford Cars dataset introduced by [Krause et al. (2015)](https://openaccess.thecvf.com/content_cvpr_2015/html/Krause_Fine-Grained_Recognition_Without_2015_CVPR_paper.html). This dataset does not contains car type, however, [mayurmahukar](https://github.com/mayurmahurkar/Stanford-Cars-Body-Data?utm_source=chatgpt.com) create a mapping to 10 types of car, which are:
 ```python
 {
     0: 'Coupe',
