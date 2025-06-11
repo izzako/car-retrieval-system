@@ -146,3 +146,4 @@ wandb
 torchmetrics[detection]
 python-dotenv
 scikit-learn
+gdown
