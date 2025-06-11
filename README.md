@@ -34,8 +34,8 @@ To set this system up, you need to:
 
 1. Clone the repo with `git clone`
 2. go to the inside of the directory with `cd car-retrieval system`
-3. (Optional) create a virtual environment `.env` with `python3 -m venv .env`
-4. Activate it with `source .env/bin/activate`
+3. (Optional) create a virtual environment `venv` with `python3 -m venv venv`
+4. Activate it with `source venv/bin/activate`
 5. Install the required dependencies `pip install -r requirements.txt`
 6. You also need to setup a `.env` for these variables:
  - `HF_TOKEN`: your huggingface credential
